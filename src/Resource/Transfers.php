@@ -56,6 +56,7 @@ class Transfers extends MoipResource
         $transfers->data->id = $this->getIfSet('id', $response);
         $transfers->data->ownId = $this->getIfSet('ownId', $response);
         $transfers->data->amount = $this->getIfSet('amount', $response);
+        $transfers->data->status = $this->getIfSet('status', $response);
 
         $transfer_instrument = $this->getIfSet('transferInstrument', $response);
         $transfers->data->transferInstrument = new stdClass();
@@ -70,6 +71,14 @@ class Transfers extends MoipResource
         $transfers->data->transferInstrument->bankAccount->agencyCheckNumber = $this->getIfSet('agencyCheckNumber', $bank_account);
         $transfers->data->transferInstrument->bankAccount->accountNumber = $this->getIfSet('accountNumber', $bank_account);
         $transfers->data->transferInstrument->bankAccount->accountCheckNumber = $this->getIfSet('accountCheckNumber', $bank_account);
+
+        if (isset($response->cancellationDetails)) {
+            $cancellation_details = $this->getIfSet('cancellationDetails', $response);
+            $transfers->data->cancellationDetails = new stdClass();
+            $transfers->data->cancellationDetails->cancelledBy = $this->getIfSet('cancelledBy', $cancellation_details);
+            $transfers->data->cancellationDetails->description = $this->getIfSet('description', $cancellation_details);
+            $transfers->data->cancellationDetails->code = $this->getIfSet('code', $cancellation_details);
+        }
 
         $holder = $this->getIfSet('holder', $bank_account);
         $transfers->data->transferInstrument->bankAccount->holder = new stdClass();
